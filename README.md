@@ -1,7 +1,7 @@
 Theta
 =======
 
-A non-linear system, based on the Jianmin function. It's powered by the GNU MP 
+A non-linear system for computing a particular chemical reaction. It's powered by the GNU MP 
 library to allow arbitrary precision in the calculations.
 
 
