@@ -10,6 +10,11 @@ library to allow arbitrary precision in the calculations.
  - Using GCC, in either a normal Linux environment, or under Cygwin, you can 
    build with the command `make install`.
 
+### Usage
+On the Linux command line, run the generated program like so:
+
+`$ ./theta.exe > results.txt`
+
 
 ### MIT License
 Copyright (c) 2013 Philip Conrad.
