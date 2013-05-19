@@ -109,8 +109,8 @@ void clearArray(bigFloat* source, uint32 numVars) {
 
 //Jianmin :: NLSystemContext* -> Effect -> IO
 void Jianmin(NLSystemContext* ctx) {
-    //File IO variables:
     uint32 i;
+    unsigned long exponent;
     //Reactions:
     bigFloat r[78];     //temp-storage during calculations
     bigFloat r_f[74];   //forward reaction
@@ -124,6 +124,7 @@ void Jianmin(NLSystemContext* ctx) {
            theta_CO, theta_CHO, theta_CH2O, theta_CH3O, theta_CH3OH;
     bigFloat K_H;
     bigFloat temp;
+    bigFloat e;
 
     // define constants for forward and reverse rate constants.
     //NOTE: constants for k_f[55]-k_f[70] are not defined! (same for k_b[].)
@@ -221,9 +222,12 @@ void Jianmin(NLSystemContext* ctx) {
     mpf_init_set(theta_Z1    , ctx->state[37]);
     mpf_init_set(theta_CO    , ctx->state[38]);
     
-    //init K_H and temp:
+    //init K_H, temp, and e:
     mpf_init(K_H);
     mpf_init(temp);
+    mpf_init(e);
+    //define e to 50 digits of precision:
+    gmp_sscanf("2.71828182845904523536028747135266249775724709369995", "%F", e);
     
     //init partial pressures:
     mpf_init_set_d(p_A       , partialPressures[0]);
@@ -566,50 +570,50 @@ void Jianmin(NLSystemContext* ctx) {
 
     // apply the steady state approximation for all thetas.
     //NOTE: need to put in GNU MP ops + rewrite to array accesses.
-    /*out[1]  = r_04 + r_12 + r_21 + r_23 - r_11;     // d(theta_E)/dt=0
-    out[2]  = r_05 - r_12 - r_13 - r_14 - r_37;     // d(theta_F)/dt=0
-    out[3]  = r_06 + r_14 + r_22 + r_34 - r_15 - r_16 - r_75; // d(theta_G)/dt=0
-    out[4]  = r_07 - r_17 - r_18 - r_39;            // d(theta_I)/dt=0
-    out[5]  = r_13 - r_21 - r_22;                   // d(theta_L)/dt=0
-    out[6]  = r_15 - r_23 - r_24 - r_49;            // d(theta_M)/dt=0 catechol
-    out[7]  = r_16 + r_17 + r_26 + r_74 - r_25;     // d(theta_N)/dt=0
-    out[8]  = r_18 + r_37 - r_26 - r_27 - r_71;     // d(theta_O)/dt=0
-    out[9]  = r_25 + r_29 + r_76 - r_30;            // d(theta_R)/dt=0
-    out[10] = r_11 + r_30 + r_33 + r_40 - r_31 - r_32 - r_48; // d(theta_S)/dt=0 phenol
-    out[11] = r_27 + r_39 + r_72 - r_34;            // d(theta_U)/dt=0
-    out[12] = r_31 - r_35;                          // d(theta_V)/dt=0
-    out[13] = r_35 + r_36 - r_50;                   // d(theta_X)/dt=0 benzene
+    /*out[0]  = r_04 + r_12 + r_21 + r_23 - r_11;     // d(theta_E)/dt=0
+    out[1]  = r_05 - r_12 - r_13 - r_14 - r_37;     // d(theta_F)/dt=0
+    out[2]  = r_06 + r_14 + r_22 + r_34 - r_15 - r_16 - r_75; // d(theta_G)/dt=0
+    out[3]  = r_07 - r_17 - r_18 - r_39;            // d(theta_I)/dt=0
+    out[4]  = r_13 - r_21 - r_22;                   // d(theta_L)/dt=0
+    out[5]  = r_15 - r_23 - r_24 - r_49;            // d(theta_M)/dt=0 catechol
+    out[6]  = r_16 + r_17 + r_26 + r_74 - r_25;     // d(theta_N)/dt=0
+    out[7]  = r_18 + r_37 - r_26 - r_27 - r_71;     // d(theta_O)/dt=0
+    out[8]  = r_25 + r_29 + r_76 - r_30;            // d(theta_R)/dt=0
+    out[9] = r_11 + r_30 + r_33 + r_40 - r_31 - r_32 - r_48; // d(theta_S)/dt=0 phenol
+    out[10] = r_27 + r_39 + r_72 - r_34;            // d(theta_U)/dt=0
+    out[11] = r_31 - r_35;                          // d(theta_V)/dt=0
+    out[12] = r_35 + r_36 - r_50;                   // d(theta_X)/dt=0 benzene
 
-    out[14] = r_03 + r_09 + r_23 + r_31 + r_31 + r_33 - r_45; // d(theta_OH)/dt=0
-    out[15] = r_45 - r_53;                          // d(theta_H2O)/dt=0
-    out[16] = r_22 + r_72 - r_42;                   // d(theta_CH)/dt =0
-    out[17] = r_14 + r_19 + r_27 + r_29 + r_42 - r_43; // d(theta_CH2)/dt=0    
-    out[18] = r_06 + r_43 - r_44;                   // d(theta_CH3)/dt=0
-    out[19] = r_44 - r_52;                          // d(theta_CH4)/dt=0
-    out[20] = r_21 + r_77 - r_46;                   // d(theta_CHO)/dt=0
-    out[21] = r_12 + r_26 + r_46 - r_47;            // d(theta_CH2O)/dt=0
-    out[22] = r_04 + r_17 + r_47 - r_41;            // d(theta_CH3O)/dt=0
-    out[23] = r_41 - r_51;                          // d(theta_CH3OH)/dt=0
-    out[24] = r_00 - r_01 - r_04 - r_05 - r_06 - r_07; // d(theta_A)/dt=0
-//    out[24] = theta_A - k_00_f/k_00_b*p_A*free*free*free*free; // d(theta_A)/dt=0 if step 0 is in equilibrium.
-    out[25] = r_32 - r_36;                          // d(theta_W)/dt=0
-    out[26] = r_24 + r_28 - r_33;                   // d(theta_T)/dt=0
-    out[27] = r_01 - r_08 - r_40;                   // d(theta_B)/dt=0
-    out[28] = r_08 - r_19;                          // d(theta_J)/dt=0
-    out[29] = r_19 - r_28;                          // d(theta_P)/dt=0
-    out[30] = theta_H - exp(-( (-1.374+0.076+0.683)/2 + 2*0.084*(theta_H-0.139))/KB/T)*pow(p_H2,0.5)*free; //theta_H
-    out[31] = r_02 - r_09;                          // d(theta_C)/dt=0
-    out[32] = r_03 - r_10;                          // d(theta_D)/dt=0
-    out[33] = r_09 + r_10 - r_20 - r_54;            // d(theta_K)/dt=0
-    out[34] = r_20 - r_29;                          // d(theta_Q)/dt=0
-    out[35] = r_75 - r_76;                          // d(theta_Y)/dt=0
-    out[36] = r_71 - r_72 - r_73;                   // d(theta_Z)/dt=0
-    out[37] = r_73 - r_74;                          // d(theta_Z1)/dt=0
-    out[38] = theta_CO - exp(-(-2.131+0.028+1.764)/KB/T)*p_CO*free; // d(theta_CO)/dt=0*/
+    out[13] = r_03 + r_09 + r_23 + r_31 + r_31 + r_33 - r_45; // d(theta_OH)/dt=0
+    out[14] = r_45 - r_53;                          // d(theta_H2O)/dt=0
+    out[15] = r_22 + r_72 - r_42;                   // d(theta_CH)/dt =0
+    out[16] = r_14 + r_19 + r_27 + r_29 + r_42 - r_43; // d(theta_CH2)/dt=0    
+    out[17] = r_06 + r_43 - r_44;                   // d(theta_CH3)/dt=0
+    out[18] = r_44 - r_52;                          // d(theta_CH4)/dt=0
+    out[19] = r_21 + r_77 - r_46;                   // d(theta_CHO)/dt=0
+    out[20] = r_12 + r_26 + r_46 - r_47;            // d(theta_CH2O)/dt=0
+    out[21] = r_04 + r_17 + r_47 - r_41;            // d(theta_CH3O)/dt=0
+    out[22] = r_41 - r_51;                          // d(theta_CH3OH)/dt=0
+    out[23] = r_00 - r_01 - r_04 - r_05 - r_06 - r_07; // d(theta_A)/dt=0
+//    out[23] = theta_A - k_00_f/k_00_b*p_A*free*free*free*free; // d(theta_A)/dt=0 if step 0 is in equilibrium.
+    out[24] = r_32 - r_36;                          // d(theta_W)/dt=0
+    out[25] = r_24 + r_28 - r_33;                   // d(theta_T)/dt=0
+    out[26] = r_01 - r_08 - r_40;                   // d(theta_B)/dt=0
+    out[27] = r_08 - r_19;                          // d(theta_J)/dt=0
+    out[28] = r_19 - r_28;                          // d(theta_P)/dt=0
+    out[29] = theta_H - exp(-( (-1.374+0.076+0.683)/2 + 2*0.084*(theta_H-0.139))/KB/T)*pow(p_H2,0.5)*free; //theta_H
+    out[30] = r_02 - r_09;                          // d(theta_C)/dt=0
+    out[31] = r_03 - r_10;                          // d(theta_D)/dt=0
+    out[32] = r_09 + r_10 - r_20 - r_54;            // d(theta_K)/dt=0
+    out[33] = r_20 - r_29;                          // d(theta_Q)/dt=0
+    out[34] = r_75 - r_76;                          // d(theta_Y)/dt=0
+    out[35] = r_71 - r_72 - r_73;                   // d(theta_Z)/dt=0
+    out[36] = r_73 - r_74;                          // d(theta_Z1)/dt=0
+    out[37] = theta_CO - exp(-(-2.131+0.028+1.764)/KB/T)*p_CO*free; // d(theta_CO)/dt=0*/
 
     // finally the summation of all thetas should be 1.
     //NOTE: need to put in GNU MP ops.
-    /*mpf_set(out[39], ( 4*ctx->state[0]  + 4*ctx->state[1]  + 4*ctx->state[2]  + 4*ctx->state[3]
+    /*mpf_set(out[38], ( 4*ctx->state[0]  + 4*ctx->state[1]  + 4*ctx->state[2]  + 4*ctx->state[3]
                      + 4*ctx->state[4]  + 4*ctx->state[5]  + 4*ctx->state[6]  + 4*ctx->state[7]
                      + 4*ctx->state[8]  + 4*ctx->state[9]  + 4*ctx->state[10] + 5*ctx->state[11]
                      + 3*ctx->state[12] + 3*ctx->state[13] + ctx->state[14]   + ctx->state[15]
@@ -724,9 +728,10 @@ void Jianmin(NLSystemContext* ctx) {
     mpf_clear(theta_Z1);
     mpf_clear(theta_CO);
 
-    //free K_H and temp:
+    //free K_H, temp, and e:
     mpf_clear(K_H);
     mpf_clear(temp);
+    mpf_clear(e);
 
     //free partial pressures:
     mpf_clear(p_A);

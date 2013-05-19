@@ -6,7 +6,9 @@ import sys
 from ast import literal_eval
 
 
-theta = [
+rate_calc = [
+    #// calculate rates for all elementary steps.
+    ('//', ' calculate rates for all elementary steps.'),
     #r[0] = k_f[0]*p_A*free*free*free*free - k_b[0]*theta_A;
     ('*', 'r[0]', 'k_f[0]', 'p_A'),
     ('*', 'r[0]', 'r[0]', 'free'),
@@ -395,6 +397,175 @@ theta = [
     ('-', 'r[29]', 'r[29]', 'temp')
 ]
 
+steady_state_approx = [
+    ('//', ' apply the steady state approximation for all thetas.'),
+    #out[0]  = r_04 + r_12 + r_21 + r_23 - r_11;     // d(theta_E)/dt=0
+    ('+', 'out[0]', 'r[4]', 'r[12]'),
+    ('+', 'out[0]', 'out[0]', 'r[21]'),
+    ('+', 'out[0]', 'out[0]', 'r[23]'),
+    ('-', 'out[0]', 'out[0]', 'r[11]'),
+    #out[1]  = r_05 - r_12 - r_13 - r_14 - r_37;     // d(theta_F)/dt=0
+    ('-', 'out[1]', 'r[5]', 'r[12]'),
+    ('-', 'out[1]', 'out[1]', 'r[13]'),
+    ('-', 'out[1]', 'out[1]', 'r[14]'),
+    ('-', 'out[1]', 'out[1]', 'r[37]'),
+    #out[2]  = r_06 + r_14 + r_22 + r_34 - r_15 - r_16 - r_75; // d(theta_G)/dt=0
+    ('+', 'out[2]', 'r[6]', 'r[14]'),
+    ('+', 'out[2]', 'out[2]', 'r[22]'),
+    ('+', 'out[2]', 'out[2]', 'r[34]'),
+    ('-', 'out[2]', 'out[2]', 'r[15]'),
+    ('-', 'out[2]', 'out[2]', 'r[16]'),
+    ('-', 'out[2]', 'out[2]', 'r[75]'),
+    #out[3]  = r_07 - r_17 - r_18 - r_39;            // d(theta_I)/dt=0
+    ('-', 'out[3]', 'r[7]', 'r[17]'),
+    ('-', 'out[3]', 'out[3]', 'r[18]'),
+    ('-', 'out[3]', 'out[3]', 'r[39]'),
+    #out[4]  = r_13 - r_21 - r_22;                   // d(theta_L)/dt=0
+    ('-', 'out[4]', 'r[13]', 'r[21]'),
+    ('-', 'out[4]', 'out[4]', 'r[22]'),
+    #out[5]  = r_15 - r_23 - r_24 - r_49;            // d(theta_M)/dt=0 catechol
+    ('-', 'out[5]', 'r[15]', 'r[23]'),
+    ('-', 'out[5]', 'out[5]', 'r[24]'),
+    ('-', 'out[5]', 'out[5]', 'r[49]'),
+    #out[6]  = r_16 + r_17 + r_26 + r_74 - r_25;     // d(theta_N)/dt=0
+    ('+', 'out[6]', 'r[16]', 'r[17]'),
+    ('+', 'out[6]', 'out[6]', 'r[26]'),
+    ('+', 'out[6]', 'out[6]', 'r[74]'),
+    ('-', 'out[6]', 'out[6]', 'r[25]'),
+    #out[7]  = r_18 + r_37 - r_26 - r_27 - r_71;     // d(theta_O)/dt=0
+    ('+', 'out[7]', 'r[18]', 'r[37]'),
+    ('-', 'out[7]', 'out[7]', 'r[26]'),
+    ('-', 'out[7]', 'out[7]', 'r[27]'),
+    ('-', 'out[7]', 'out[7]', 'r[71]'),
+    #out[8]  = r_25 + r_29 + r_76 - r_30;            // d(theta_R)/dt=0
+    ('+', 'out[8]', 'r[25]', 'r[29]'),
+    ('+', 'out[8]', 'out[8]', 'r[76]'),
+    ('-', 'out[8]', 'out[8]', 'r[30]'),
+    #out[9] = r_11 + r_30 + r_33 + r_40 - r_31 - r_32 - r_48; // d(theta_S)/dt=0 phenol
+    ('+', 'out[9]', 'r[11]', 'r[30]'),
+    ('+', 'out[9]', 'out[9]', 'r[33]'),
+    ('+', 'out[9]', 'out[9]', 'r[40]'),
+    ('-', 'out[9]', 'out[9]', 'r[31]'),
+    ('-', 'out[9]', 'out[9]', 'r[32]'),
+    ('-', 'out[9]', 'out[9]', 'r[48]'),
+    #out[10] = r_27 + r_39 + r_72 - r_34;            // d(theta_U)/dt=0
+    ('+', 'out[10]', 'r[27]', 'r[39]'),
+    ('+', 'out[10]', 'out[10]', 'r[72]'),
+    ('-', 'out[10]', 'out[10]', 'r[34]'),
+    #out[11] = r_31 - r_35;                          // d(theta_V)/dt=0
+    ('+', 'out[11]', 'r[31]', 'r[35]'),
+    #out[12] = r_35 + r_36 - r_50;                   // d(theta_X)/dt=0 benzene
+    ('+', 'out[12]', 'r[35]', 'r[36]'),
+    ('+', 'out[12]', 'out[12]', 'r[50]'),
+    #blank line
+    ('//', ''),
+    #out[13] = r_03 + r_09 + r_23 + r_31 + r_31 + r_33 - r_45; // d(theta_OH)/dt=0
+    ('+', 'out[13]', 'r[3]', 'r[9]'),
+    ('+', 'out[13]', 'out[13]', 'r[23]'),
+    ('+', 'out[13]', 'out[13]', 'r[31]'), #did you mean to add this twice?
+    ('+', 'out[13]', 'out[13]', 'r[31]'),
+    ('+', 'out[13]', 'out[13]', 'r[33]'),
+    ('-', 'out[13]', 'out[13]', 'r[45]'),
+    #out[14] = r_45 - r_53;                          // d(theta_H2O)/dt=0
+    ('+', 'out[14]', 'out[45]', 'r[53]'),
+    #out[15] = r_22 + r_72 - r_42;                   // d(theta_CH)/dt =0
+    ('+', 'out[15]', 'r[22]', 'r[72]'),
+    ('-', 'out[15]', 'out[15]', 'r[42]'),
+    #out[16] = r_14 + r_19 + r_27 + r_29 + r_42 - r_43; // d(theta_CH2)/dt=0
+    ('+', 'out[16]', 'r[14]', 'r[19]'),
+    ('+', 'out[16]', 'out[16]', 'r[27]'),
+    ('+', 'out[16]', 'out[16]', 'r[29]'),
+    ('+', 'out[16]', 'out[16]', 'r[42]'),
+    ('-', 'out[16]', 'out[16]', 'r[43]'),
+    #out[17] = r_06 + r_43 - r_44;                   // d(theta_CH3)/dt=0
+    ('+', 'out[17]', 'r[6]', 'r[43]'),
+    ('-', 'out[17]', 'out[17]', 'r[44]'),
+    #out[18] = r_44 - r_52;                          // d(theta_CH4)/dt=0
+    ('-', 'out[16]', 'r[44]', 'r[52]'),
+    #out[19] = r_21 + r_77 - r_46;                   // d(theta_CHO)/dt=0
+    ('+', 'out[19]', 'r[21]', 'r[77]'),
+    ('-', 'out[19]', 'out[16]', 'r[46]'),
+    #out[20] = r_12 + r_26 + r_46 - r_47;            // d(theta_CH2O)/dt=0
+    ('+', 'out[20]', 'r[12]', 'r[26]'),
+    ('+', 'out[20]', 'out[20]', 'r[46]'),
+    ('-', 'out[20]', 'out[20]', 'r[47]'),
+    #out[21] = r_04 + r_17 + r_47 - r_41;            // d(theta_CH3O)/dt=0
+    ('+', 'out[21]', 'r[4]', 'r[17]'),
+    ('+', 'out[21]', 'out[21]', 'r[47]'),
+    ('-', 'out[21]', 'out[21]', 'r[41]'),
+    #out[22] = r_41 - r_51;                          // d(theta_CH3OH)/dt=0
+    ('-', 'out[22]', 'r[41]', 'r[51]'),
+    #out[23] = r_00 - r_01 - r_04 - r_05 - r_06 - r_07; // d(theta_A)/dt=0
+    ('-', 'out[23]', 'r[0]', 'r[1]'),
+    ('-', 'out[23]', 'out[23]', 'r[4]'),
+    ('-', 'out[23]', 'out[23]', 'r[5]'),
+    ('-', 'out[23]', 'out[23]', 'r[6]'),
+    ('-', 'out[23]', 'out[23]', 'r[7]'),
+    #//    out[23] = theta_A - k_00_f/k_00_b*p_A*free*free*free*free; // d(theta_A)/dt=0 if step 0 is in equilibrium.
+    ('//', '    out[23] = theta_A - k_00_f/k_00_b*p_A*free*free*free*free; // d(theta_A)/dt=0 if step 0 is in equilibrium.'),
+    #out[24] = r_32 - r_36;                          // d(theta_W)/dt=0
+    ('-', 'out[24]', 'r[32]', 'r[36]'),
+    #out[25] = r_24 + r_28 - r_33;                   // d(theta_T)/dt=0
+    ('+', 'out[24]', 'r[24]', 'r[28]'),
+    ('-', 'out[24]', 'out[25]', 'r[33]'),
+    #out[26] = r_01 - r_08 - r_40;                   // d(theta_B)/dt=0
+    ('-', 'out[26]', 'r[1]', 'r[8]'),
+    ('-', 'out[26]', 'out[26]', 'r[40]'),
+    #out[27] = r_08 - r_19;                          // d(theta_J)/dt=0
+    ('-', 'out[27]', 'r[8]', 'r[19]'),
+    #out[28] = r_19 - r_28;                          // d(theta_P)/dt=0
+    ('-', 'out[28]', 'r[19]', 'r[28]'),
+    #out[29] = theta_H - exp(-( (-1.374+0.076+0.683)/2 + 2*0.084*(theta_H-0.139))/KB/T)*pow(p_H2,0.5)*free; //theta_H
+    #                     e^(-((-0.615 / 2 = -0.3075) + (0.168)*(theta_H-0.139)) /KB/T) *pow(p_H2,0.5)*free;
+    #since this expression is such a pain, we'll use out[29] as temp storage.
+    ('=d', 'temp', '0.139'),
+    ('-', 'out[29]', 'theta_H', 'temp'),
+    ('=d', 'temp', '0.168'),
+    ('*', 'out[29]', 'out[29]', 'temp'),
+    ('=d', 'temp', '-0.3075'),
+    ('+', 'out[29]', 'out[29]', 'temp'),
+    ('neg', 'out[29]', 'out[29]'), #-((-0.3075) + (0.168)*(theta_H-0.139)) taken care of...
+    ('/', 'out[29]', 'out[29]', 'KB'),
+    ('/', 'out[29]', 'out[29]', 'T'),
+    ('custom', 'exponent = mpf_get_ui(out[29]);'),
+    ('//', 'expect to see some truncation here...'),
+    ('pow', 'out[29]', 'e', 'exponent'), #e^(-((-0.3075) + (0.168)*(theta_H-0.139))/KB/T) taken care of...
+    ('sqrt', 'temp', 'p_H2'),
+    ('*', 'temp', 'temp', 'free'),
+    ('*', 'temp', 'out[29]', 'temp'), #e^(-((-0.3075) + (0.168)*(theta_H-0.139))/KB/T)*pow(p_H2,0.5)*free taken care of...
+    ('=', 'out[29]', 'theta_H'),
+    ('-', 'out[29]', 'out[29]', 'temp'), #entire source expression taken care of!
+    #out[30] = r_02 - r_09;                          // d(theta_C)/dt=0
+    ('-', 'out[30]', 'r[2]', 'r[9]'),
+    #out[31] = r_03 - r_10;                          // d(theta_D)/dt=0
+    ('-', 'out[31]', 'r[3]', 'r[10]'),
+    #out[32] = r_09 + r_10 - r_20 - r_54;            // d(theta_K)/dt=0
+    ('+', 'out[32]', 'r[9]', 'r[10]'),
+    ('-', 'out[32]', 'out[32]', 'r[20]'),
+    ('-', 'out[32]', 'out[32]', 'r[54]'),
+    #out[33] = r_20 - r_29;                          // d(theta_Q)/dt=0
+    ('-', 'out[33]', 'r[20]', 'r[29]'),
+    #out[34] = r_75 - r_76;                          // d(theta_Y)/dt=0
+    ('-', 'out[34]', 'r[75]', 'r[76]'),
+    #out[35] = r_71 - r_72 - r_73;                   // d(theta_Z)/dt=0
+    ('-', 'out[35]', 'r[71]', 'r[72]'),
+    ('-', 'out[35]', 'out[35]', 'r[73]'),
+    #out[36] = r_73 - r_74;                          // d(theta_Z1)/dt=0
+    ('-', 'out[36]', 'r[73]', 'r[74]'),
+    #out[37] = theta_CO - exp(-(-2.131+0.028+1.764)/KB/T)*p_CO*free; // d(theta_CO)/dt=0*/
+    ('=d', 'out[37]', 'theta_C0'),
+    ('=d', 'temp', '-0.339'),
+    ('/', 'temp', 'temp', 'KB'),
+    ('/', 'temp', 'temp', 'T'),
+    ('neg', 'temp', 'temp'),
+    ('custom', 'exponent = mpf_get_ui(temp);'),
+    ('//', 'expect to see some truncation here...'),
+    ('pow', 'temp', 'e', 'exponent'),
+    ('*', 'temp', 'temp', 'p_CO'),
+    ('*', 'temp', 'temp', 'free'),
+    ('-', 'out[37]', 'out[37]', 'temp'),
+]
+
 
 def assemble(bytelist):
     final = ""
@@ -414,11 +585,15 @@ def assemble(bytelist):
         elif item[0] == "pow":
             final += "mpf_pow_ui(" + '{:>10}'.format(item[1]) + ", " + '{:>10}'.format(item[2]) + ", " + '{:>10}'.format(item[3]) + ");"
         elif item[0] == "neg":
-            final += "mpf_neg(" + '{:>10}'.format(item[1]) + ", " + '{:>10}'.format(item[2]) + ", " + '{:>10}'.format(item[3]) + ");"
+            final += "mpf_neg(" + '{:>10}'.format(item[1]) + ", " + '{:>10}'.format(item[2]) + ");"
         elif item[0] == "abs":
-            final += "mpf_abs(" + '{:>10}'.format(item[1]) + ", " + '{:>10}'.format(item[2]) + ", " + '{:>10}'.format(item[3]) + ");"
+            final += "mpf_abs(" + '{:>10}'.format(item[1]) + ", " + '{:>10}'.format(item[2]) + ");"
+        elif item[0] == "sqrt":
+            final += "mpf_sqrt(" + '{:>10}'.format(item[1]) + ", " + '{:>10}'.format(item[2]) + ");"
         elif item[0] == "//":
             final += "//" + item[1]
+        elif item[0] == "custom":
+            final += item[1]
         else:
             pass
         #on each pass:
@@ -431,6 +606,6 @@ if __name__ == '__main__':
     #src = sys.argv[1]
     #bytelist = literal_eval(src)
     #bytelist = list(bytelist)
-    bytelist = theta
-    result = assemble(bytelist)
-    print result
+    src = [rate_calc, steady_state_approx]
+    result = map(assemble, src)
+    for item in result: print item
