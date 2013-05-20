@@ -162,7 +162,7 @@ void Jianmin(NLSystemContext* ctx) {
 
 
     //---------------------------------------------------------
-    //BEGIN INITIALIZATIONS:
+    //INITIALIZATIONS:
 
     //init r[]:
     for(i = 0; i < 78; i++) {
@@ -244,328 +244,292 @@ void Jianmin(NLSystemContext* ctx) {
     mpf_init_set_d(T         , partialPressures[11]);
 
 
-    //END INITIALIZATIONS:
     //---------------------------------------------------------
+    //MAIN MATH KERNEL:
 
-
+    //FORWARD REACTION RATES:
     // calculate rates for all elementary steps.
-    mpf_mul(      r[0],     k_f[0],        p_A);
-    mpf_mul(      r[0],       r[0],       free);
-    mpf_mul(      r[0],       r[0],       free);
-    mpf_mul(      r[0],       r[0],       free);
-    mpf_mul(      r[0],       r[0],       free);
-    mpf_mul(      temp,     k_b[0],    theta_A);
-    mpf_sub(      r[0],       r[0],       temp);
-    mpf_mul(      r[1],     k_f[1],    theta_A);
-    mpf_mul(      r[1],       r[1],    theta_H);
-    mpf_mul(      temp,     k_b[1],    theta_B);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(      r[1],       r[1],       temp);
-    //r[2] and r[3] handled later on...
-    mpf_mul(      r[4],     k_f[4],    theta_A);
-    mpf_mul(      r[4],       r[4],       free);
-    mpf_mul(      temp,     k_b[4],    theta_E);
-    mpf_mul(      temp,       temp, theta_CH3O);
-    mpf_sub(      r[4],       r[4],       temp);
-    mpf_mul(      r[5],     k_f[5],    theta_A);
-    mpf_mul(      r[5],       r[5],       free);
-    mpf_mul(      temp,     k_b[5],    theta_F);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(      r[5],       r[5],       temp);
-    mpf_mul(      r[6],     k_f[6],    theta_A);
-    mpf_mul(      r[6],       r[6],       free);
-    mpf_mul(      temp,     k_b[6],    theta_G);
-    mpf_mul(      temp,       temp,  theta_CH3);
-    mpf_sub(      r[6],       r[6],       temp);
-    mpf_mul(      r[7],     k_f[7],    theta_A);
-    mpf_mul(      r[7],       r[7],       free);
-    mpf_mul(      temp,     k_b[7],    theta_I);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(      r[7],       r[7],       temp);
-    mpf_mul(      r[8],     k_f[8],    theta_B);
-    mpf_mul(      r[8],       r[8],       free);
-    mpf_mul(      r[8],       r[8],       free);
-    mpf_mul(      temp,     k_b[8],    theta_J);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(      r[8],       r[8],       temp);
-    //r[10] handled later on...
-    mpf_mul(     r[11],    k_f[11],    theta_E);
-    mpf_mul(     r[11],      r[11],    theta_H);
-    mpf_mul(      temp,    k_b[11],    theta_S);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[11],      r[11],       temp);
-    mpf_mul(     r[12],    k_f[12],    theta_F);
-    mpf_mul(     r[12],      r[12],       free);
-    mpf_mul(      temp,    k_b[12],    theta_E);
-    mpf_mul(      temp,       temp, theta_CH2O);
-    mpf_sub(     r[12],      r[12],       temp);
-    mpf_mul(     r[13],    k_f[13],    theta_F);
-    mpf_mul(     r[13],      r[13],       free);
-    mpf_mul(      temp,    k_b[13],    theta_L);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(     r[13],      r[13],       temp);
-    mpf_mul(     r[14],    k_f[14],    theta_F);
-    mpf_mul(      temp,    k_b[14],    theta_G);
-    mpf_mul(      temp,       temp,  theta_CH2);
-    mpf_sub(     r[14],      r[14],       temp);
-    mpf_mul(     r[15],    k_f[15],    theta_G);
-    mpf_mul(     r[15],      r[15],    theta_H);
-    mpf_mul(      temp,    k_b[15],    theta_M);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[15],      r[15],       temp);
-    mpf_mul(     r[16],    k_f[16],    theta_G);
-    mpf_mul(     r[16],      r[16],       free);
-    mpf_mul(      temp,    k_b[16],    theta_N);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(     r[16],      r[16],       temp);
-    mpf_mul(     r[17],    k_f[17],    theta_I);
-    mpf_mul(     r[17],      r[17],       free);
-    mpf_mul(      temp,    k_b[17],    theta_N);
-    mpf_mul(      temp,       temp, theta_CH3O);
-    mpf_sub(     r[17],      r[17],       temp);
-    mpf_mul(     r[18],    k_f[18],    theta_I);
-    mpf_mul(     r[18],      r[18],       free);
-    mpf_mul(     r[18],      r[18],       free);
-    mpf_mul(      temp,    k_b[18],    theta_O);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(     r[18],      r[18],       temp);
-    //r[20] handled later on...
-    mpf_mul(     r[21],    k_f[21],    theta_L);
-    mpf_mul(     r[21],      r[21],       free);
-    mpf_mul(      temp,    k_b[21],    theta_E);
-    mpf_mul(      temp,       temp,  theta_CHO);
-    mpf_sub(     r[21],      r[21],       temp);
-    mpf_mul(     r[22],    k_f[22],    theta_L);
-    mpf_mul(     r[22],      r[22],       free);
-    mpf_mul(      temp,    k_b[22],    theta_G);
-    mpf_mul(      temp,       temp,   theta_CH);
-    mpf_sub(     r[22],      r[22],       temp);
-    mpf_mul(     r[23],    k_f[23],    theta_M);
-    mpf_mul(     r[23],      r[23],       free);
-    mpf_mul(      temp,    k_b[23],    theta_E);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(     r[23],      r[23],       temp);
-    mpf_mul(     r[25],    k_f[25],    theta_M);
-    mpf_mul(     r[25],      r[25],    theta_H);
-    mpf_mul(      temp,    k_b[25],    theta_T);
-    mpf_sub(     r[25],      r[25],       temp);
-    mpf_mul(     r[25],    k_f[25],    theta_N);
-    mpf_mul(     r[25],      r[25],    theta_H);
-    mpf_mul(      temp,    k_b[25],    theta_R);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[25],      r[25],       temp);
-    mpf_mul(     r[26],    k_f[26],    theta_O);
-    mpf_mul(     r[26],      r[26],       free);
-    mpf_mul(      temp,    k_b[26],    theta_N);
-    mpf_mul(      temp,       temp, theta_CH2O);
-    mpf_sub(     r[26],      r[26],       temp);
-    mpf_mul(     r[27],    k_f[27],    theta_O);
-    mpf_mul(     r[27],      r[27],       free);
-    mpf_mul(      temp,    k_b[27],    theta_U);
-    mpf_mul(      temp,       temp,  theta_CH2);
-    mpf_sub(     r[27],      r[27],       temp);
-    mpf_mul(     r[28],    k_f[28],    theta_P);
-    mpf_mul(     r[28],      r[28],    theta_H);
-    mpf_mul(      temp,    k_b[28],    theta_T);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[28],      r[28],       temp);
+    mpf_mul(    r_f[0],     k_f[0],        p_A);
+    mpf_mul(    r_f[0],     r_f[0],       free);
+    mpf_mul(    r_f[0],     r_f[0],       free);
+    mpf_mul(    r_f[0],     r_f[0],       free);
+    mpf_mul(    r_f[0],     r_f[0],       free);
+    mpf_mul(    r_f[1],     k_f[1],    theta_A);
+    mpf_mul(    r_f[1],     r_f[1],    theta_H);
+    //r_f[2] and r_f[3] handled later on...
+    mpf_mul(    r_f[4],     k_f[4],    theta_A);
+    mpf_mul(    r_f[4],     r_f[4],       free);
+    mpf_mul(    r_f[5],     k_f[5],    theta_A);
+    mpf_mul(    r_f[5],     r_f[5],       free);
+    mpf_mul(    r_f[6],     k_f[6],    theta_A);
+    mpf_mul(    r_f[6],     r_f[6],       free);
+    mpf_mul(    r_f[7],     k_f[7],    theta_A);
+    mpf_mul(    r_f[7],     r_f[7],       free);
+    mpf_mul(    r_f[8],     k_f[8],    theta_B);
+    mpf_mul(    r_f[8],     r_f[8],       free);
+    mpf_mul(    r_f[8],     r_f[8],       free);
+    //r_f[9] and r_f[10] handled later on...
+    mpf_mul(   r_f[11],    k_f[11],    theta_E);
+    mpf_mul(   r_f[11],    r_f[11],    theta_H);
+    mpf_mul(   r_f[12],    k_f[12],    theta_F);
+    mpf_mul(   r_f[12],    r_f[12],       free);
+    mpf_mul(   r_f[13],    k_f[13],    theta_F);
+    mpf_mul(   r_f[13],    r_f[13],       free);
+    mpf_mul(   r_f[14],    k_f[14],    theta_F);
+    mpf_mul(   r_f[15],    k_f[15],    theta_G);
+    mpf_mul(   r_f[15],    r_f[15],    theta_H);
+    mpf_mul(   r_f[16],    k_f[16],    theta_G);
+    mpf_mul(   r_f[16],    r_f[16],       free);
+    mpf_mul(   r_f[17],    k_f[17],    theta_I);
+    mpf_mul(   r_f[17],    r_f[17],       free);
+    mpf_mul(   r_f[18],    k_f[18],    theta_I);
+    mpf_mul(   r_f[18],    r_f[18],       free);
+    mpf_mul(   r_f[18],    r_f[18],       free);
+    mpf_mul(   r_f[19],    k_f[19],    theta_J);
+    //r_f[20] handled later on...
+    mpf_mul(   r_f[21],    k_f[21],    theta_L);
+    mpf_mul(   r_f[21],    r_f[21],       free);
+    mpf_mul(   r_f[22],    k_f[22],    theta_L);
+    mpf_mul(   r_f[22],    r_f[22],       free);
+    mpf_mul(   r_f[23],    k_f[23],    theta_M);
+    mpf_mul(   r_f[23],    r_f[23],       free);
+    mpf_mul(   r_f[24],    k_f[24],    theta_M);
+    mpf_mul(   r_f[24],    r_f[24],    theta_H);
+    mpf_mul(   r_f[25],    k_f[25],    theta_N);
+    mpf_mul(   r_f[25],    r_f[25],    theta_H);
+    mpf_mul(   r_f[26],    k_f[26],    theta_O);
+    mpf_mul(   r_f[26],    r_f[26],       free);
+    mpf_mul(   r_f[27],    k_f[27],    theta_O);
+    mpf_mul(   r_f[27],    r_f[27],       free);
+    mpf_mul(   r_f[28],    k_f[28],    theta_P);
+    mpf_mul(   r_f[28],    r_f[28],    theta_H);
     //r[29] handled later on...
-    mpf_mul(     r[30],    k_f[30],    theta_R);
-    mpf_mul(     r[30],      r[30],    theta_H);
-    mpf_mul(      temp,    k_b[30],    theta_S);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[30],      r[30],       temp);
-    mpf_mul(     r[31],    k_f[31],    theta_S);
-    mpf_mul(     r[31],      r[31],       free);
-    mpf_mul(      temp,    k_b[31],    theta_V);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(     r[31],      r[31],       temp);
-    mpf_mul(     r[32],    k_f[32],    theta_S);
-    mpf_mul(     r[32],      r[32],    theta_H);
-    mpf_mul(      temp,    k_b[32],    theta_W);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[32],      r[32],       temp);
-    mpf_mul(     r[33],    k_f[33],    theta_T);
-    mpf_mul(     r[33],      r[33],       free);
-    mpf_mul(      temp,    k_b[33],    theta_S);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(     r[33],      r[33],       temp);
-    mpf_mul(     r[34],    k_f[34],    theta_U);
-    mpf_mul(     r[34],      r[34],    theta_H);
-    mpf_mul(      temp,    k_b[34],    theta_G);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[34],      r[34],       temp);
-    mpf_mul(     r[35],    k_f[35],    theta_V);
-    mpf_mul(     r[35],      r[35],    theta_H);
-    mpf_mul(      temp,    k_b[35],    theta_X);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[35],      r[35],       temp);
-    mpf_mul(     r[36],    k_f[36],    theta_W);
-    mpf_mul(      temp,    k_b[36],    theta_X);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(     r[36],      r[36],       temp);
-    mpf_mul(     r[34],    k_f[34],    theta_F);
-    mpf_mul(     r[34],      r[34],       free);
-    mpf_mul(      temp,    k_b[34],    theta_O);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(     r[34],      r[34],       temp);
+    mpf_mul(   r_f[30],    k_f[30],    theta_R);
+    mpf_mul(   r_f[30],    r_f[30],    theta_H);
+    mpf_mul(   r_f[31],    k_f[31],    theta_S);
+    mpf_mul(   r_f[31],    r_f[31],       free);
+    mpf_mul(   r_f[32],    k_f[32],    theta_S);
+    mpf_mul(   r_f[32],    r_f[32],    theta_H);
+    mpf_mul(   r_f[33],    k_f[33],    theta_T);
+    mpf_mul(   r_f[33],    r_f[33],       free);
+    mpf_mul(   r_f[34],    k_f[34],    theta_U);
+    mpf_mul(   r_f[34],    r_f[34],    theta_H);
+    mpf_mul(   r_f[35],    k_f[35],    theta_V);
+    mpf_mul(   r_f[35],    r_f[35],    theta_H);
+    mpf_mul(   r_f[36],    k_f[36],    theta_W);
+    mpf_mul(   r_f[37],    k_f[37],    theta_F);
+    mpf_mul(   r_f[37],    r_f[37],       free);
     //what happened to r_38?!
-    mpf_mul(     r[39],    k_f[39],    theta_I);
-    mpf_mul(     r[39],      r[39],       free);
-    mpf_mul(     r[39],      r[39],       free);
-    mpf_mul(      temp,    k_b[39],    theta_U);
-    mpf_mul(      temp,       temp,  theta_CH3);
-    mpf_sub(     r[39],      r[39],       temp);
-    mpf_mul(     r[40],    k_f[40],    theta_B);
-    mpf_mul(     r[40],      r[40],       free);
-    mpf_mul(     r[40],      r[40],       free);
-    mpf_mul(      temp,    k_b[40],    theta_S);
-    mpf_mul(      temp,       temp, theta_CH3O);
-    mpf_sub(     r[40],      r[40],       temp);
-    mpf_mul(     r[41],    k_f[41], theta_CH3O);
-    mpf_mul(     r[41],      r[41],    theta_H);
-    mpf_mul(      temp,    k_b[41], theta_CH3OH);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[41],      r[41],       temp);
-    mpf_mul(     r[42],    k_f[42],   theta_CH);
-    mpf_mul(     r[42],      r[42],    theta_H);
-    mpf_mul(      temp,    k_b[42],  theta_CH2);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[42],      r[42],       temp);
-    mpf_mul(     r[43],    k_f[43],  theta_CH2);
-    mpf_mul(     r[43],      r[43],    theta_H);
-    mpf_mul(      temp,    k_b[43],  theta_CH3);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[43],      r[43],       temp);
-    mpf_mul(     r[44],    k_f[44],  theta_CH3);
-    mpf_mul(     r[44],      r[44],    theta_H);
-    mpf_mul(      temp,    k_b[44],  theta_CH4);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[44],      r[44],       temp);
-    mpf_mul(     r[45],    k_f[45],   theta_OH);
-    mpf_mul(     r[45],      r[45],    theta_H);
-    mpf_mul(      temp,    k_b[45],  theta_H2O);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[45],      r[45],       temp);
-    mpf_mul(     r[46],    k_f[46],  theta_CHO);
-    mpf_mul(     r[46],      r[46],    theta_H);
-    mpf_mul(      temp,    k_b[46], theta_CH2O);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[46],      r[46],       temp);
-    mpf_mul(     r[47],    k_f[47], theta_CH2O);
-    mpf_mul(     r[47],      r[47],    theta_H);
-    mpf_mul(      temp,    k_b[47], theta_CH3O);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[47],      r[47],       temp);
-    mpf_mul(     r[48],    k_f[48],    theta_S);
-    mpf_mul(      temp,    k_b[48],        p_S);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[48],      r[48],       temp);
-    mpf_mul(     r[49],    k_f[49],    theta_M);
-    mpf_mul(      temp,    k_b[49],        p_M);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[49],      r[49],       temp);
-    mpf_mul(     r[50],    k_f[50],    theta_X);
-    mpf_mul(      temp,    k_b[50],        p_X);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[50],      r[50],       temp);
-    mpf_mul(     r[51],    k_f[51], theta_CH3OH);
-    mpf_mul(      temp,    k_b[51],    p_CH3OH);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[51],      r[51],       temp);
-    mpf_mul(     r[52],    k_f[52],  theta_CH4);
-    mpf_mul(      temp,    k_b[52],      p_CH4);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[52],      r[52],       temp);
-    mpf_mul(     r[53],    k_f[53],  theta_H2O);
-    mpf_mul(      temp,    k_b[53],      p_H2O);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[53],      r[53],       temp);
-    mpf_mul(     r[54],    k_f[54],    theta_K);
-    mpf_mul(      temp,    k_b[54],        p_K);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[54],      r[54],       temp);
+    mpf_mul(   r_f[39],    k_f[39],    theta_I);
+    mpf_mul(   r_f[39],    r_f[39],       free);
+    mpf_mul(   r_f[39],    r_f[39],       free);
+    mpf_mul(   r_f[40],    k_f[40],    theta_B);
+    mpf_mul(   r_f[40],    r_f[40],       free);
+    mpf_mul(   r_f[40],    r_f[40],       free);
+    mpf_mul(   r_f[41],    k_f[41], theta_CH3O);
+    mpf_mul(   r_f[41],    r_f[41],    theta_H);
+    mpf_mul(   r_f[42],    k_f[42],   theta_CH);
+    mpf_mul(   r_f[42],    r_f[42],    theta_H);
+    mpf_mul(   r_f[43],    k_f[43],  theta_CH2);
+    mpf_mul(   r_f[43],    r_f[43],    theta_H);
+    mpf_mul(   r_f[44],    k_f[44],  theta_CH3);
+    mpf_mul(   r_f[44],    r_f[44],    theta_H);
+    mpf_mul(   r_f[45],    k_f[45],   theta_OH);
+    mpf_mul(   r_f[45],    r_f[45],    theta_H);
+    mpf_mul(   r_f[46],    k_f[46],  theta_CHO);
+    mpf_mul(   r_f[46],    r_f[46],    theta_H);
+    mpf_mul(   r_f[47],    k_f[47], theta_CH2O);
+    mpf_mul(   r_f[47],    r_f[47],    theta_H);
+    mpf_mul(   r_f[48],    k_f[48],    theta_S);
+    mpf_mul(   r_f[49],    k_f[49],    theta_M);
+    mpf_mul(   r_f[50],    k_f[50],    theta_X);
+    mpf_mul(   r_f[51],    k_f[51], theta_CH3OH);
+    mpf_mul(   r_f[52],    k_f[52],  theta_CH4);
+    mpf_mul(   r_f[53],    k_f[53],  theta_H2O);
+    mpf_mul(   r_f[54],    k_f[54],    theta_K);
+    //not using r_f[55] through r_f[74]?!
+    //also, consider making below assignments in-order (might help optimizer).
+    mpf_mul(   r_f[71],    k_f[71],    theta_O);
+    mpf_mul(   r_f[71],    r_f[71],       free);
+    mpf_mul(   r_f[72],    k_f[72],    theta_Z);
+    mpf_mul(   r_f[72],    r_f[72],       free);
+    mpf_mul(   r_f[73],    k_f[73],    theta_Z);
+    mpf_mul(   r_f[73],    r_f[73],       free);
+    mpf_mul(   r_f[74],    k_f[74],   theta_Z1);
+    mpf_mul(   r_f[75],    k_f[75],    theta_G);
+    mpf_mul(   r_f[75],    r_f[75],    theta_H);
+    mpf_mul(   r_f[76],    k_f[76],    theta_Y);
+    mpf_mul(   r_f[76],    r_f[76],       free);
+    mpf_mul(   r_f[77],    k_f[77],   theta_CO);
+    mpf_mul(   r_f[77],    r_f[77],    theta_H);
+    //
+    // steps including C, D, K, Q.
+    mpf_mul(    r_f[2],     k_f[2],    theta_A);
+    mpf_mul(    r_f[2],     r_f[2],    theta_H);
+    mpf_mul(    r_f[3],     k_f[3],    theta_A);
+    mpf_mul(    r_f[3],     r_f[3],       free);
+    mpf_mul(    r_f[9],     k_f[9],    theta_C);
+    mpf_mul(    r_f[9],     r_f[9],       free);
+    mpf_mul(   r_f[10],    k_f[10],    theta_D);
+    mpf_mul(   r_f[10],    r_f[10],    theta_H);
+    mpf_mul(   r_f[20],    k_f[20],    theta_K);
+    mpf_mul(   r_f[20],    r_f[20],       free);
+    mpf_mul(   r_f[29],    k_f[29],    theta_Q);
+    mpf_mul(   r_f[29],    r_f[29],       free);
+
+
+    //REVERSE REACTION RATES:
+    mpf_mul(    r_b[0],     k_b[0],    theta_A);
+    mpf_mul(    r_b[1],     k_b[1],    theta_B);
+    mpf_mul(    r_b[1],     r_b[1],       free);
+    //r[2] and r[3] handled later on...
+    mpf_mul(    r_b[4],     k_b[4],    theta_E);
+    mpf_mul(    r_b[4],     r_b[4], theta_CH3O);
+    mpf_mul(    r_b[5],     k_b[5],    theta_F);
+    mpf_mul(    r_b[5],     r_b[5],    theta_H);
+    mpf_mul(    r_b[6],     k_b[6],    theta_G);
+    mpf_mul(    r_b[6],     r_b[6],  theta_CH3);
+    mpf_mul(    r_b[7],     k_b[7],    theta_I);
+    mpf_mul(    r_b[7],     r_b[7],    theta_H);
+    mpf_mul(    r_b[8],     k_b[8],    theta_J);
+    mpf_mul(    r_b[8],     r_b[8],    theta_H);
+    //r[9] and r[10] handled later on...
+    mpf_mul(   r_b[11],    k_b[11],    theta_S);
+    mpf_mul(   r_b[11],    r_b[11],       free);
+    mpf_mul(   r_b[12],    k_b[12],    theta_E);
+    mpf_mul(   r_b[12],    r_b[12], theta_CH2O);
+    mpf_mul(   r_b[13],    k_b[13],    theta_L);
+    mpf_mul(   r_b[13],    r_b[13],    theta_H);
+    mpf_mul(   r_b[14],    k_b[14],    theta_G);
+    mpf_mul(   r_b[14],    r_b[14],  theta_CH2);
+    mpf_mul(   r_b[15],    k_b[15],    theta_M);
+    mpf_mul(   r_b[15],    r_b[15],       free);
+    mpf_mul(   r_b[16],    k_b[16],    theta_N);
+    mpf_mul(   r_b[16],    r_b[16],   theta_OH);
+    mpf_mul(   r_b[17],    k_b[17],    theta_N);
+    mpf_mul(   r_b[17],    r_b[17], theta_CH3O);
+    mpf_mul(   r_b[18],    k_b[18],    theta_O);
+    mpf_mul(   r_b[18],    r_b[18],    theta_H);
+    mpf_mul(   r_b[19],    k_b[19],    theta_P);
+    mpf_mul(   r_b[19],    r_b[19],  theta_CH2);
+    //r[20] handled later on...
+    mpf_mul(   r_b[21],    k_b[21],    theta_E);
+    mpf_mul(   r_b[21],    r_b[21],  theta_CHO);
+    mpf_mul(   r_b[22],    k_b[22],    theta_G);
+    mpf_mul(   r_b[22],    r_b[22],   theta_CH);
+    mpf_mul(   r_b[23],    k_b[23],    theta_E);
+    mpf_mul(   r_b[23],    r_b[23],   theta_OH);
+    mpf_mul(   r_b[24],    k_b[24],    theta_T);
+    mpf_mul(   r_b[25],    k_b[25],    theta_R);
+    mpf_mul(   r_b[25],    r_b[25],       free);
+    mpf_mul(   r_b[26],    k_b[26],    theta_N);
+    mpf_mul(   r_b[26],    r_b[26], theta_CH2O);
+    mpf_mul(   r_b[27],    k_b[27],    theta_U);
+    mpf_mul(   r_b[27],    r_b[27],  theta_CH2);
+    mpf_mul(   r_b[28],    k_b[28],    theta_T);
+    mpf_mul(   r_b[28],    r_b[28],       free);
+    //r[29] handled later on...
+    mpf_mul(   r_b[30],    k_b[30],    theta_S);
+    mpf_mul(   r_b[30],    r_b[30],       free);
+    mpf_mul(   r_b[31],    k_b[31],    theta_V);
+    mpf_mul(   r_b[31],    r_b[31],   theta_OH);
+    mpf_mul(   r_b[32],    k_b[32],    theta_W);
+    mpf_mul(   r_b[32],    r_b[32],       free);
+    mpf_mul(   r_b[33],    k_b[33],    theta_S);
+    mpf_mul(   r_b[33],    r_b[33],   theta_OH);
+    mpf_mul(   r_b[34],    k_b[34],    theta_G);
+    mpf_mul(   r_b[34],    r_b[34],       free);
+    mpf_mul(   r_b[34],    r_b[34],       free);
+    mpf_mul(   r_b[35],    k_b[35],    theta_X);
+    mpf_mul(   r_b[35],    r_b[35],       free);
+    mpf_mul(   r_b[35],    r_b[35],       free);
+    mpf_mul(   r_b[36],    k_b[36],    theta_X);
+    mpf_mul(   r_b[36],    r_b[36],   theta_OH);
+    mpf_mul(   r_b[37],    k_b[37],    theta_O);
+    mpf_mul(   r_b[37],    r_b[37],    theta_H);
+    //what happened to r_38?!
+    mpf_mul(   r_b[39],    k_b[39],    theta_U);
+    mpf_mul(   r_b[39],    r_b[39],  theta_CH3);
+    mpf_mul(   r_b[40],    k_b[40],    theta_S);
+    mpf_mul(   r_b[40],    r_b[40], theta_CH3O);
+    mpf_mul(   r_b[41],    k_b[41], theta_CH3OH);
+    mpf_mul(   r_b[41],    r_b[41],       free);
+    mpf_mul(   r_b[42],    k_b[42],  theta_CH2);
+    mpf_mul(   r_b[42],    r_b[42],       free);
+    mpf_mul(   r_b[43],    k_b[43],  theta_CH3);
+    mpf_mul(   r_b[43],    r_b[43],       free);
+    mpf_mul(   r_b[44],    k_b[44],  theta_CH4);
+    mpf_mul(   r_b[44],    r_b[44],       free);
+    mpf_mul(   r_b[45],    k_b[45],  theta_H2O);
+    mpf_mul(   r_b[45],    r_b[45],       free);
+    mpf_mul(   r_b[46],    k_b[46], theta_CH2O);
+    mpf_mul(   r_b[46],    r_b[46],       free);
+    mpf_mul(   r_b[47],    k_b[47], theta_CH3O);
+    mpf_mul(   r_b[47],    r_b[47],       free);
+    mpf_mul(   r_b[47],    r_b[47],       free);
+    mpf_mul(   r_b[48],    k_b[48],        p_S);
+    mpf_mul(   r_b[48],    r_b[48],       free);
+    mpf_mul(   r_b[48],    r_b[48],       free);
+    mpf_mul(   r_b[48],    r_b[48],       free);
+    mpf_mul(   r_b[48],    r_b[48],       free);
+    mpf_mul(   r_b[49],    k_b[49],        p_M);
+    mpf_mul(   r_b[49],    r_b[49],       free);
+    mpf_mul(   r_b[49],    r_b[49],       free);
+    mpf_mul(   r_b[49],    r_b[49],       free);
+    mpf_mul(   r_b[49],    r_b[49],       free);
+    mpf_mul(   r_b[50],    k_b[50],        p_X);
+    mpf_mul(   r_b[50],    r_b[50],       free);
+    mpf_mul(   r_b[50],    r_b[50],       free);
+    mpf_mul(   r_b[50],    r_b[50],       free);
+    mpf_mul(   r_b[51],    k_b[51],    p_CH3OH);
+    mpf_mul(   r_b[51],    r_b[51],       free);
+    mpf_mul(   r_b[52],    k_b[52],      p_CH4);
+    mpf_mul(   r_b[52],    r_b[52],       free);
+    mpf_mul(   r_b[53],    k_b[53],      p_H2O);
+    mpf_mul(   r_b[53],    r_b[53],       free);
+    mpf_mul(   r_b[54],    k_b[54],        p_K);
+    mpf_mul(   r_b[54],    r_b[54],       free);
+    mpf_mul(   r_b[54],    r_b[54],       free);
+    mpf_mul(   r_b[54],    r_b[54],       free);
+    mpf_mul(   r_b[54],    r_b[54],       free);
     //not using r[55] through r[74]?!
     //also, consider making below assignments in-order (might help optimizer).
-    mpf_mul(     r[71],    k_f[71],    theta_O);
-    mpf_mul(     r[71],      r[71],       free);
-    mpf_mul(      temp,    k_b[71],    theta_Z);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(     r[71],      r[71],       temp);
-    mpf_mul(     r[72],    k_f[72],    theta_Z);
-    mpf_mul(     r[72],      r[72],       free);
-    mpf_mul(      temp,    k_b[72],    theta_U);
-    mpf_mul(      temp,       temp,   theta_CH);
-    mpf_sub(     r[72],      r[72],       temp);
-    mpf_mul(     r[73],    k_f[73],    theta_Z);
-    mpf_mul(     r[73],      r[73],       free);
-    mpf_mul(      temp,    k_b[73],   theta_Z1);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(     r[73],      r[73],       temp);
-    mpf_mul(     r[74],    k_f[74],   theta_Z1);
-    mpf_mul(      temp,    k_b[74],    theta_N);
-    mpf_mul(      temp,       temp,   theta_CO);
-    mpf_sub(     r[74],      r[74],       temp);
-    mpf_mul(     r[75],    k_f[75],    theta_G);
-    mpf_mul(     r[75],      r[75],    theta_H);
-    mpf_mul(      temp,    k_b[75],    theta_Y);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[75],      r[75],       temp);
-    mpf_mul(     r[76],    k_f[76],    theta_Y);
-    mpf_mul(     r[76],      r[76],       free);
-    mpf_mul(      temp,    k_b[76],    theta_R);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(     r[76],      r[76],       temp);
-    mpf_mul(     r[77],    k_f[77],   theta_CO);
-    mpf_mul(     r[77],      r[77],    theta_H);
-    mpf_mul(      temp,    k_b[77],  theta_CHO);
-    mpf_sub(     r[77],      r[77],       temp);
-
+    mpf_mul(   r_b[71],    k_b[71],    theta_Z);
+    mpf_mul(   r_b[71],    r_b[71],    theta_H);
+    mpf_mul(   r_b[72],    k_b[72],    theta_U);
+    mpf_mul(   r_b[72],    r_b[72],   theta_CH);
+    mpf_mul(   r_b[73],    k_b[73],   theta_Z1);
+    mpf_mul(   r_b[73],    r_b[73],    theta_H);
+    mpf_mul(   r_b[74],    k_b[74],    theta_N);
+    mpf_mul(   r_b[74],    r_b[74],   theta_CO);
+    mpf_mul(   r_b[75],    k_b[75],    theta_Y);
+    mpf_mul(   r_b[75],    r_b[75],       free);
+    mpf_mul(   r_b[76],    k_b[76],    theta_R);
+    mpf_mul(   r_b[76],    r_b[76],   theta_OH);
+    mpf_mul(   r_b[77],    k_b[77],  theta_CHO);
+    //
     // steps including C, D, K, Q.
-    mpf_mul(      r[2],     k_f[2],    theta_A);
-    mpf_mul(      r[2],       r[2],    theta_H);
-    mpf_mul(      temp,     k_b[2],    theta_C);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(      r[2],       r[2],       temp);
-    mpf_mul(      r[3],     k_f[3],    theta_A);
-    mpf_mul(      r[3],       r[3],       free);
-    mpf_mul(      temp,     k_b[3],    theta_D);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(      r[3],       r[3],       temp);
-    mpf_mul(      r[9],     k_f[9],    theta_C);
-    mpf_mul(      r[9],       r[9],       free);
-    mpf_mul(      temp,     k_b[9],    theta_K);
-    mpf_mul(      temp,       temp,   theta_OH);
-    mpf_sub(      r[9],       r[9],       temp);
-    mpf_mul(     r[10],    k_f[10],    theta_D);
-    mpf_mul(     r[10],      r[10],    theta_H);
-    mpf_mul(      temp,    k_b[10],    theta_K);
-    mpf_mul(      temp,       temp,       free);
-    mpf_sub(     r[10],      r[10],       temp);
-    mpf_mul(     r[20],    k_f[20],    theta_K);
-    mpf_mul(     r[20],      r[20],       free);
-    mpf_mul(      temp,    k_b[20],    theta_Q);
-    mpf_mul(      temp,       temp,    theta_H);
-    mpf_sub(     r[20],      r[20],       temp);
-    mpf_mul(     r[29],    k_f[29],    theta_Q);
-    mpf_mul(     r[29],      r[29],       free);
-    mpf_mul(      temp,    k_b[29],    theta_R);
-    mpf_mul(      temp,       temp,  theta_CH2);
-    mpf_sub(     r[29],      r[29],       temp);
+    mpf_mul(    r_b[2],     k_b[2],    theta_C);
+    mpf_mul(    r_b[2],     r_b[2],       free);
+    mpf_mul(    r_b[3],     k_b[3],    theta_D);
+    mpf_mul(    r_b[3],     r_b[3],   theta_OH);
+    mpf_mul(    r_b[9],     k_b[9],    theta_K);
+    mpf_mul(    r_b[9],     r_b[9],   theta_OH);
+    mpf_mul(   r_b[10],    k_b[10],    theta_K);
+    mpf_mul(   r_b[10],    r_b[10],       free);
+    mpf_mul(   r_b[20],    k_b[20],    theta_Q);
+    mpf_mul(   r_b[20],    r_b[20],    theta_H);
+    mpf_mul(   r_b[29],    k_b[29],    theta_R);
+    mpf_mul(   r_b[29],    r_b[29],  theta_CH2);
+
+
+    //OVERALL REACTION RATES:
+    for(i = 0; i < 74; i++) {
+        mpf_sub(      r[i],     r_f[i],     r_b[i]);
+    }
+    
+
+    //---------------------------------------------------------
 
 
     // apply the steady state approximation for all thetas.
@@ -626,47 +590,32 @@ void Jianmin(NLSystemContext* ctx) {
              );*/
 
     //NOTE: need to put in GNU MP ops + rewrite to array accesses.
-    /*K_H = exp(-( (-1.374+0.076+0.683)/2 + 2*0.084*(theta_H-0.139))/KB/T);
-
-    r_00_f = k_00_f*p_A*free*free*free*free; r_00_b = k_00_b*theta_A;
-    r_01_f = k_01_f*theta_A*theta_H;     r_01_b = k_01_b*theta_B*free;
-    r_02_f = k_02_f*theta_A*theta_H;     r_02_b = k_02_b*theta_C*free;
-    r_03_f = k_03_f*theta_A*free;        r_03_b = k_03_b*theta_D*theta_OH;
-    r_04_f = k_04_f*theta_A*free;        r_04_b = k_04_b*theta_E*theta_CH3O;
-    r_05_f = k_05_f*theta_A*free;        r_05_b = k_05_b*theta_F*theta_H;
-    r_06_f = k_06_f*theta_A*free;        r_06_b = k_06_b*theta_G*theta_CH3;
-    r_07_f = k_07_f*theta_A*free;        r_07_b = k_07_b*theta_I*theta_H;
-    r_15_f = k_15_f*theta_G*theta_H;     r_15_b = k_15_b*theta_M*free;
-    r_18_f = k_18_f*theta_I*free*free;   r_18_b = k_18_b*theta_O*theta_H;
-    r_22_f = k_22_f*theta_L*free;        r_22_b = k_22_b*theta_G*theta_CH;
-    r_23_f = k_23_f*theta_M*free;        r_23_b = k_23_b*theta_E*theta_OH;
-    r_24_f = k_24_f*theta_M*theta_H;     r_24_b = k_24_b*theta_T;
-    r_25_f = k_25_f*theta_N*theta_H;     r_25_b = k_25_b*theta_R*free;
-    r_30_f = k_30_f*theta_R*theta_H;     r_30_b = k_30_b*theta_S*free;
-    r_34_f = k_34_f*theta_U*theta_H;     r_34_b = k_34_b*theta_G*free*free;
-    r_42_f = k_42_f*theta_CH*theta_H;    r_42_b = k_42_b*theta_CH2*free;
-    r_43_f = k_43_f*theta_CH2*theta_H;   r_43_b = k_43_b*theta_CH3*free;
-    r_44_f = k_44_f*theta_CH3*theta_H;   r_44_b = k_44_b*theta_CH4*free;
-
-    r_48_f = k_48_f*theta_S;             r_48_b = k_48_b*p_S*free*free*free*free; //phenol   desorption
-    r_49_f = k_49_f*theta_M;             r_49_b = k_49_b*p_M*free*free*free*free;           //catechol desorption
-    r_71_f = k_71_f*theta_O*free;        r_71_b = k_71_b*theta_Z*theta_H;
-    r_72_f = k_72_f*theta_Z*free;        r_72_b = k_72_b*theta_U*theta_CH;
-    r_73_f = k_73_f*theta_Z*free;        r_73_b = k_73_b*theta_Z1*theta_H;
-    r_74_f = k_74_f*theta_Z1;            r_74_b = k_74_b*theta_N*0.01;*/
-
-    //output:
-    //To send output to a file, run this program like so:
-    //`$ ./theta.exe > output.txt`
-    for(i = 0; i < 78; i++) {
-        gmp_printf("r[%d] = %Fg\n", i, r[i]);
-    }
-    
-    gmp_printf("K_H = %Fg\n", K_H);
+    /*K_H = exp(-( (-1.374+0.076+0.683)/2 + 2*0.084*(theta_H-0.139))/KB/T);*/
 
 
     //---------------------------------------------------------
-    //BEGIN FREES:
+    //OUTPUT:
+    //To send output to a file, run this program like so:
+    //`$ ./theta.exe > output.txt`
+    printf("OVERALL REACTION RATES:\n");
+    for(i = 0; i < 78; i++) {
+        gmp_printf("r[%d] = %Fg\n", i, r[i]);
+    }
+    gmp_printf("K_H = %Fg\n", K_H);
+
+    printf("\nFORWARD REACTION RATES:\n");
+    for(i = 0; i < 74; i++) {
+        gmp_printf("r_f[%d] = %Fg\n", i, r_f[i]);
+    }
+
+    printf("\nREVERSE REACTION RATES:\n");
+    for(i = 0; i < 74; i++) {
+        gmp_printf("r_b[%d] = %Fg\n", i, r_b[i]);
+    }
+
+
+    //---------------------------------------------------------
+    //FREES:
 
     //free up the memory GNU MP allocated behind the scenes:
 
@@ -747,7 +696,7 @@ void Jianmin(NLSystemContext* ctx) {
     mpf_clear(KB);
     mpf_clear(T);
 
-    //END FREES:
+
     //---------------------------------------------------------
 
 }
@@ -758,6 +707,7 @@ int main(int argc, char** argv[]) {
     bool inBounds;
     uint32 i;
 
+    //Set default precision for GNU MP:
     mpf_set_default_prec(256);
 
     //Initialize our bigFloat arrays:
@@ -765,16 +715,18 @@ int main(int argc, char** argv[]) {
     initArray(minBounds, in_minBounds, 39);
     initArray(maxBounds, in_maxBounds, 39);
 
-//    gmp_printf("state[0] = %F\n", state[0]);
-
     //Initialize our NLSystemContext:
     initNLSystemContext(&ctx, state, minBounds, maxBounds, 39);
 
-//    gmp_printf("ctx->state[0] = %F\n", ctx.state[0]);
-
+    //Run the main non-linear function:
     Jianmin(&ctx);
 
+    //Check to make sure the system stayed within constraints:
     inBounds = checkBounds(&ctx, 39);
+
+    if(inBounds == false) {
+        printf("\nThe system strayed outside of its constraints! Please check your math.\n");
+    }
     
     //free up the memory GNU MP allocated behind the scenes:
     clearArray(state, 39);
