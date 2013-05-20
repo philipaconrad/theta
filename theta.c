@@ -113,8 +113,8 @@ void Jianmin(NLSystemContext* ctx) {
     unsigned long exponent;
     //Reactions:
     bigFloat r[78];     //temp-storage during calculations
-    bigFloat r_f[74];   //forward reaction
-    bigFloat r_b[74];   //backward reaction
+    bigFloat r_f[78];   //forward reaction
+    bigFloat r_b[78];   //backward reaction
 
     //Note: 'theta_H' is initialized in second bigFloat group below.
     bigFloat theta_A, theta_B, theta_C, theta_D, theta_E, theta_F, theta_G, theta_I, theta_J, theta_K,
@@ -169,11 +169,11 @@ void Jianmin(NLSystemContext* ctx) {
         mpf_init(r[i]);
     }
     //init r_f[]:
-    for(i = 0; i < 74; i++) {
+    for(i = 0; i < 78; i++) {
         mpf_init(r_f[i]);
     }
     //init r_b[]:
-    for(i = 0; i < 74; i++) {
+    for(i = 0; i < 78; i++) {
         mpf_init(r_b[i]);
     }
 
@@ -524,7 +524,7 @@ void Jianmin(NLSystemContext* ctx) {
 
 
     //OVERALL REACTION RATES:
-    for(i = 0; i < 74; i++) {
+    for(i = 0; i < 78; i++) {
         mpf_sub(      r[i],     r_f[i],     r_b[i]);
     }
     
@@ -604,12 +604,12 @@ void Jianmin(NLSystemContext* ctx) {
     gmp_printf("K_H = %Fg\n", K_H);
 
     printf("\nFORWARD REACTION RATES:\n");
-    for(i = 0; i < 74; i++) {
+    for(i = 0; i < 78; i++) {
         gmp_printf("r_f[%d] = %Fg\n", i, r_f[i]);
     }
 
     printf("\nREVERSE REACTION RATES:\n");
-    for(i = 0; i < 74; i++) {
+    for(i = 0; i < 78; i++) {
         gmp_printf("r_b[%d] = %Fg\n", i, r_b[i]);
     }
 
@@ -624,11 +624,11 @@ void Jianmin(NLSystemContext* ctx) {
         mpf_clear(r[i]);
     }
     //free r_f[]:
-    for(i = 0; i < 74; i++) {
+    for(i = 0; i < 78; i++) {
         mpf_clear(r_f[i]);
     }
     //free r_b[]:
-    for(i = 0; i < 74; i++) {
+    for(i = 0; i < 78; i++) {
         mpf_clear(r_b[i]);
     }
 
